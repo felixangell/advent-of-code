@@ -1,6 +1,4 @@
-# join up smallest pairs
-# take diff of each pair
-# add all up distances
+from collections import Counter
 
 left, right = [], []
 
@@ -11,13 +9,22 @@ with open("day1.txt", "r") as file:
         left.append(a)
         right.append(b)
 
+count = Counter(right)
+similarity = 0
+
+for num in left:
+    if num in count:
+        print(num, 'and', count[num])
+        similarity += num * count[num]
+
 left.sort()
 right.sort()
 
-out = 0
+res = 0
 
 while left and right:
     dist = abs(left.pop() - right.pop())
-    out += dist
+    res += dist
 
-print(out)
+print(similarity)
+print(res)
