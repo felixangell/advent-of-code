@@ -24,8 +24,8 @@ def check(report):
             a += 1
             b += 1
             continue
+        
         # not a safe inc/dec amount
-
         return False
 
     return True
