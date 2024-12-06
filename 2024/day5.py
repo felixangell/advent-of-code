@@ -8,33 +8,20 @@
 
 import collections
 
-def is_correct(rules, update):
-    # if contains both numbers
-    # must have key before value.
 
-    # val mapped to index
-    # for each page in array
-    # is idx of val > idx of other?
+def correctify(rules, update, fix=False):
+    for i in range(len(update)):
+        for j in range(i + 1, len(update)):
+            rule = rules[update[j]]
+            if update[i] in rule:
+                if fix:
+                    update[i], update[j] = update[j], update[i]
+                    return correctify(rules, update, True)
+                else:
+                    return 0
 
-    # 75, 47, 61, 53, 29
-    # 0   1   2   3   4
+    return int(update[len(update)//2])
 
-    # 75|47.
-    # page 75 must be before 47.
-    
-    update_idx = {}
-    for i, u in enumerate(update):
-        update_idx[u] = i
-    
-    print(update_idx)
-
-    for page in update:
-        rfp = rules[page]
-        for other in rfp:            
-            if other in update_idx and (update_idx[other] < update_idx[page]):
-                return False
-
-    return True
 
 with open("day5.txt", "r") as file:
     rules_for_page = collections.defaultdict(list)
@@ -43,7 +30,7 @@ with open("day5.txt", "r") as file:
 
     for line in file:
         line = line.rstrip()
-        
+
         if '|' in line:
             parts = line.split('|')
             rules_for_page[int(parts[0])].append(int(parts[1]))
@@ -53,10 +40,9 @@ with open("day5.txt", "r") as file:
             # it's an update.
             updates += [[int(x) for x in line.split(',')]]
 
-    count = 0
+    p1, p2 = 0, 0
     for update in updates:
-        if is_correct(rules_for_page, update):
-            print(update, "OK!")
-            count += update[len(update)//2]
+        p1 += correctify(rules_for_page, update, False)
+        p2 += correctify(rules_for_page, update, True)
 
-    print("count:", count)
+    print(p1, "...", (p2 - p1))
